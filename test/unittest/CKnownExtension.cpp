@@ -41,7 +41,7 @@ void test_QMapShack::readExtGarminTPX1(const QString &file, const QString &ns)
             const CTrackData &trk = itemTrk->getTrackData();
 
             // filter all internal extensions (starting with ::ql:)
-            QStringList extensions = itemTrk->getExistingDataSources().filter(QRegExp("^((?!::ql:).)*$"));
+            QStringList extensions = itemTrk->getExistingDataSources().filter(QRegularExpression("^((?!::ql:).)*$"));
 
             VERIFY_EQUAL(GarminTPX1Exts.size(), extensions.size());
             for(const QString &exp : GarminTPX1Exts)

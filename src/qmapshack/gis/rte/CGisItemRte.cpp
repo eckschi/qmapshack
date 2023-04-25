@@ -676,7 +676,7 @@ void CGisItemRte::drawItem(QPainter& p, const QRectF& /*viewport*/, CGisDraw* gi
         p.drawEllipse(anchor, 5, 5);
 
         QString str, val, unit;
-        IUnit::self().seconds2time((mouseMoveFocus->time.toTime_t() - startTime.toTime_t()), val, unit);
+        IUnit::self().seconds2time((mouseMoveFocus->time.toSecsSinceEpoch() - startTime.toSecsSinceEpoch()), val, unit);
         str += tr("Time: %1%2").arg(val, unit) + " ";
         IUnit::self().meter2distance(mouseMoveFocus->distance, val, unit);
         str += tr("Distance: %1%2").arg(val, unit);
@@ -963,7 +963,7 @@ void CGisItemRte::setResult(Routino_Output* route, const QString& options)
             rtept->fakeSubpt.instruction = QString(next->desc1) + ".\n" + QString(next->desc2) + ".";
 
             rte.totalDistance = rtept->fakeSubpt.distance;
-            rte.totalTime = rtept->fakeSubpt.time.toTime_t() - time.toTime_t();
+            rte.totalTime = rtept->fakeSubpt.time.toSecsSinceEpoch() - time.toSecsSinceEpoch();
         }
         else if(rtept != nullptr)
         {
@@ -992,7 +992,7 @@ void CGisItemRte::setResult(Routino_Output* route, const QString& options)
             }
 
             rte.totalDistance = subpt.distance;
-            rte.totalTime = subpt.time.toTime_t() - time.toTime_t();
+            rte.totalTime = subpt.time.toSecsSinceEpoch() - time.toSecsSinceEpoch();
             subpt.instruction = QString(next->desc1) + ".\n" + QString(next->desc2) + ".";
         }
 
@@ -1302,12 +1302,12 @@ void CGisItemRte::setResultFromBRouter(const QDomDocument& xml, const QString& o
         {
             const QString& commentTxt = node.toComment().data();
             // ' track-length = 180864 filtered ascend = 428 plain-ascend = -172 cost=270249 '
-            const QRegExp rxAscDes("(\\s*track-length\\s*=\\s*)(-?\\d+)(\\s*)(filtered ascend\\s*=\\s*-?\\d+)(\\s*)(plain-ascend\\s*=\\s*-?\\d+)(\\s*)(cost\\s*=\\s*-?\\d+)(\\s*)");
-            int pos = rxAscDes.indexIn(commentTxt);
-            if (pos > -1)
+            const QRegularExpression rxAscDes("(\\s*track-length\\s*=\\s*)(-?\\d+)(\\s*)(filtered ascend\\s*=\\s*-?\\d+)(\\s*)(plain-ascend\\s*=\\s*-?\\d+)(\\s*)(cost\\s*=\\s*-?\\d+)(\\s*)");
+            QRegularExpressionMatch match = rxAscDes.match(commentTxt);
+            if (match.hasMatch())
             {
-                rte.totalDistance = rxAscDes.cap(2).toFloat();
-                rte.cmt = QString("%1, %2, %3").arg(rxAscDes.cap(4), rxAscDes.cap(6), rxAscDes.cap(8));
+                rte.totalDistance = match.capturedView(2).toFloat();
+                rte.cmt = QString("%1, %2, %3").arg(match.capturedView(4), match.capturedView(6), match.capturedView(8));
             }
             break;
         }

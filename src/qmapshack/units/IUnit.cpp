@@ -424,15 +424,15 @@ const char* IUnit::tblTimezone[] =
 
 const int N_TIMEZONES = sizeof(IUnit::tblTimezone) / sizeof(const char*);
 
-const QRegExp IUnit::reCoord1("^\\s*([N|S]){1}\\W*([0-9]+)\\W*([0-9]+\\.[0-9]+)\\s+([E|W|O]){1}\\W*([0-9]+)\\W*([0-9]+\\.[0-9]+)\\s*$");
+const QRegularExpression IUnit::reCoord1("^\\s*([N|S]){1}\\W*([0-9]+)\\W*([0-9]+\\.[0-9]+)\\s+([E|W|O]){1}\\W*([0-9]+)\\W*([0-9]+\\.[0-9]+)\\s*$");
 
-const QRegExp IUnit::reCoord2("^\\s*([N|S]){1}\\s*([0-9]+\\.[0-9]+)\\W*\\s+([E|W|O]){1}\\s*([0-9]+\\.[0-9]+)\\W*\\s*$");
+const QRegularExpression IUnit::reCoord2("^\\s*([N|S]){1}\\s*([0-9]+\\.[0-9]+)\\W*\\s+([E|W|O]){1}\\s*([0-9]+\\.[0-9]+)\\W*\\s*$");
 
-const QRegExp IUnit::reCoord3("^\\s*([-0-9]+\\.[0-9]+)\\s+([-0-9]+\\.[0-9]+)\\s*$");
+const QRegularExpression IUnit::reCoord3("^\\s*([-0-9]+\\.[0-9]+)\\s+([-0-9]+\\.[0-9]+)\\s*$");
 
-const QRegExp IUnit::reCoord4("^\\s*([N|S]){1}\\s*([0-9]+)\\W+([0-9]+)\\W+([0-9]+\\.[0-9]+)\\W*([E|W|O]){1}\\W*([0-9]+)\\W+([0-9]+)\\W+([0-9]+\\.[0-9]+)\\W*\\s*$");
+const QRegularExpression IUnit::reCoord4("^\\s*([N|S]){1}\\s*([0-9]+)\\W+([0-9]+)\\W+([0-9]+\\.[0-9]+)\\W*([E|W|O]){1}\\W*([0-9]+)\\W+([0-9]+)\\W+([0-9]+\\.[0-9]+)\\W*\\s*$");
 
-const QRegExp IUnit::reCoord5("^\\s*([-0-9]+\\.[0-9]+)([N|S])\\s+([-0-9]+\\.[0-9]+)([W|E])\\s*$");
+const QRegularExpression IUnit::reCoord5("^\\s*([-0-9]+\\.[0-9]+)([N|S])\\s+([-0-9]+\\.[0-9]+)([W|E])\\s*$");
 
 IUnit::IUnit(const type_e& type, const QString& baseUnit, const qreal baseFactor, const QString& speedUnit, const qreal speedFactor, const QString& elevationUnit, const qreal elevationFactor, QObject* parent)
     : QObject(parent)
@@ -707,7 +707,7 @@ bool IUnit::parseTimestamp(const QString& time, QDateTime& datetime)
 
 QDateTime IUnit::parseTimestamp(const QString& timetext, int& tzoffset)
 {
-    const QRegExp tzRE("[-+]\\d\\d:\\d\\d$");
+    const QRegularExpression tzRE("[-+]\\d\\d:\\d\\d$");
     int i;
 
     tzoffset = 0;
@@ -735,8 +735,9 @@ QDateTime IUnit::parseTimestamp(const QString& timetext, int& tzoffset)
         applyTzOffset = true;
     }
 
-    else if ((i = tzRE.indexIn(timetext)) != NOIDX)
+    else if (QRegularExpressionMatch match = tzRE.match(timetext); match.hasMatch())
     {
+        i=match.capturedStart();
         // trailing timezone offset [-+]HH:MM present
         // This does not match the original intentions of the GPX
         // file format but appears to be found occasionally in
@@ -745,12 +746,12 @@ QDateTime IUnit::parseTimestamp(const QString& timetext, int& tzoffset)
         // add the literal string to the format so fromString()
         // will succeed
         format += "'";
-        format += timetext.rightRef(6);
+        format += timetext.right(6);
         format += "'";
 
         // calculate the offset
-        int offsetHours(timetext.midRef(i + 1, 2).toUInt());
-        int offsetMinutes(timetext.midRef(i + 4, 2).toUInt());
+        int offsetHours(timetext.mid(i + 1, 2).toUInt());
+        int offsetMinutes(timetext.mid(i + 4, 2).toUInt());
         if (timetext[i] == '-')
         {
             tzoffset = -(60 * offsetHours + offsetMinutes);
@@ -893,57 +894,58 @@ void IUnit::degToStr(const qreal& x, const qreal& y, QString& str)
 
 bool IUnit::strToDeg(const QString& str, qreal& lon, qreal& lat)
 {
-    if(reCoord2.exactMatch(str))
+    QRegularExpressionMatch match2 = reCoord2.match(str);
+    if(match2.hasMatch())
     {
-        bool signLat = reCoord2.cap(1) == "S";
-        qreal absLat = reCoord2.cap(2).toDouble();
+        bool signLat = match2.capturedView(1).compare("S") == 0;
+        qreal absLat = match2.capturedView(2).toDouble();
         lat = signLat ? -absLat : absLat;
 
-        bool signLon = reCoord2.cap(3) == "W";
-        qreal absLon = reCoord2.cap(4).toDouble();
+        bool signLon = match2.capturedView(3).compare("W") == 0;
+        qreal absLon = match2.capturedView(4).toDouble();
         lon = signLon ? -absLon : absLon;
     }
-    else if(reCoord1.exactMatch(str))
+    else if(QRegularExpressionMatch match1 = reCoord1.match(str); match1.hasMatch())
     {
-        bool signLat = reCoord1.cap(1) == "S";
-        int degLat = reCoord1.cap(2).toInt();
-        qreal minLat = reCoord1.cap(3).toDouble();
+        bool signLat = match1.capturedView(1).compare("S") == 0;
+        int degLat = match1.capturedView(2).toInt();
+        qreal minLat = match1.capturedView(3).toDouble();
 
         GPS_Math_DegMin_To_Deg(signLat, degLat, minLat, lat);
 
-        bool signLon = reCoord1.cap(4) == "W";
-        int degLon = reCoord1.cap(5).toInt();
-        qreal minLon = reCoord1.cap(6).toDouble();
+        bool signLon = match1.capturedView(4).compare("W") == 0;
+        int degLon = match1.capturedView(5).toInt();
+        qreal minLon = match1.capturedView(6).toDouble();
 
         GPS_Math_DegMin_To_Deg(signLon, degLon, minLon, lon);
     }
-    else if(reCoord3.exactMatch(str))
+    else if(QRegularExpressionMatch match3 = reCoord3.match(str); match3.hasMatch())
     {
-        lat = reCoord3.cap(1).toDouble();
-        lon = reCoord3.cap(2).toDouble();
+        lat = match3.capturedView(1).toDouble();
+        lon = match3.capturedView(2).toDouble();
     }
-    else if(reCoord4.exactMatch(str))
+    else if(QRegularExpressionMatch match4 = reCoord4.match(str); match4.hasMatch())
     {
-        bool signLat = reCoord4.cap(1) == "S";
-        int degLat = reCoord4.cap(2).toInt();
-        int minLat = reCoord4.cap(3).toInt();
-        qreal secLat = reCoord4.cap(4).toFloat();
+        bool signLat = match4.capturedView(1).compare("S") == 0;
+        int degLat = match4.capturedView(2).toInt();
+        int minLat = match4.capturedView(3).toInt();
+        qreal secLat = match4.capturedView(4).toFloat();
 
         GPS_Math_DegMinSec_To_Deg(signLat, degLat, minLat, secLat, lat);
 
-        bool signLon = reCoord4.cap(5) == "W";
-        int degLon = reCoord4.cap(6).toInt();
-        int minLon = reCoord4.cap(7).toInt();
-        qreal secLon = reCoord4.cap(8).toFloat();
+        bool signLon = match4.capturedView(5).compare("W") == 0;
+        int degLon = match4.capturedView(6).toInt();
+        int minLon = match4.capturedView(7).toInt();
+        qreal secLon = match4.capturedView(8).toFloat();
 
         GPS_Math_DegMinSec_To_Deg(signLon, degLon, minLon, secLon, lon);
     }
-    else if(reCoord5.exactMatch(str))
+    else if(QRegularExpressionMatch match5 = reCoord5.match(str); match5.hasMatch())
     {
-        bool signLon = reCoord4.cap(4) == "W";
-        bool signLat = reCoord4.cap(2) == "S";
-        lat = reCoord5.cap(1).toDouble();
-        lon = reCoord5.cap(3).toDouble();
+        bool signLon = match5.capturedView(4).compare("W") == 0;
+        bool signLat = match5.capturedView(2).compare("S") == 0;
+        lat = match5.capturedView(1).toDouble();
+        lon = match5.capturedView(3).toDouble();
 
         if(signLon)
         {
@@ -971,23 +973,23 @@ bool IUnit::strToDeg(const QString& str, qreal& lon, qreal& lat)
 
 bool IUnit::isValidCoordString(const QString& str)
 {
-    if(reCoord1.exactMatch(str))
+    if(reCoord1.match(str).hasMatch())
     {
         return true;
     }
-    else if(reCoord2.exactMatch(str))
+    else if(reCoord2.match(str).hasMatch())
     {
         return true;
     }
-    else if(reCoord3.exactMatch(str))
+    else if(reCoord3.match(str).hasMatch())
     {
         return true;
     }
-    else if(reCoord4.exactMatch(str))
+    else if(reCoord4.match(str).hasMatch())
     {
         return true;
     }
-    else if(reCoord5.exactMatch(str))
+    else if(reCoord5.match(str).hasMatch())
     {
         return true;
     }

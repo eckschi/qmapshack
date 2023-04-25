@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QTimeZone>
 
-
 #define NOFLOAT 1000000000000.0
 #define NOINT   0x7FFFFFFF
 #define NOTIME  0xFFFFFFFF
@@ -198,11 +197,11 @@ protected:
 private:
     static const IUnit* m_self;
 
-    static const QRegExp reCoord1;
-    static const QRegExp reCoord2;
-    static const QRegExp reCoord3;
-    static const QRegExp reCoord4;
-    static const QRegExp reCoord5;
+    static const QRegularExpression reCoord1;
+    static const QRegularExpression reCoord2;
+    static const QRegularExpression reCoord3;
+    static const QRegularExpression reCoord4;
+    static const QRegularExpression reCoord5;
 
     enum unit_type_e
     {

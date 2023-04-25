@@ -725,7 +725,7 @@ void CCanvas::wheelEvent(QWheelEvent* e)
 }
 
 
-void CCanvas::enterEvent(QEvent* e)
+void CCanvas::enterEvent(QEnterEvent* e)
 {
     if(labelHelp->isVisible())
     {

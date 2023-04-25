@@ -300,7 +300,7 @@ bool CRtGpsTetherInfo::verifyLine(const QString& line)
         cs ^= data[i];
     }
 
-    return line.rightRef(2).toInt(0, 16) == cs;
+    return line.right(2).toInt(0, 16) == cs;
 }
 
 void CRtGpsTetherInfo::nmeaGSV(const QStringList& /*tokens*/)

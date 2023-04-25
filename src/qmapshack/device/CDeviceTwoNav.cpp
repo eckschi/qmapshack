@@ -95,7 +95,7 @@ CDeviceTwoNav::~CDeviceTwoNav()
 void CDeviceTwoNav::readReginfo(const QString& filename)
 {
     QString product, unittype;
-    QRegExp re("(.*)=(.*)");
+    QRegularExpression re(QRegularExpression::anchoredPattern("(.*)=(.*)"));
     QFile file(filename);
     file.open(QIODevice::ReadOnly);
 
@@ -103,18 +103,19 @@ void CDeviceTwoNav::readReginfo(const QString& filename)
     {
         QString line = file.readLine().simplified();
 
-        if(re.exactMatch(line))
+        QRegularExpressionMatch match = re.match(line);
+        if(match.hasMatch())
         {
-            QString tok = re.cap(1);
-            QString val = re.cap(2);
+            QStringView tok = match.capturedView(1);
+            QStringView val = match.capturedView(2);
 
-            if(tok == "product")
+            if(tok.compare("product") == 0)
             {
-                product = val;
+                product = val.toString();
             }
-            else if(tok == "unittype")
+            else if(tok.compare("unittype") == 0)
             {
-                unittype = val;
+                unittype = val.toString();
             }
         }
     }
@@ -128,7 +129,7 @@ void CDeviceTwoNav::readReginfo(const QString& filename)
 void CDeviceTwoNav::insertCopyOfProject(IGisProject* project)
 {
     QString name = project->getName();
-    name = name.remove(QRegExp("[^A-Za-z0-9_]"));
+    name = name.remove(QRegularExpression("[^A-Za-z0-9_]"));
 
     QDir dirData = dir.absoluteFilePath(pathData);
     QString filename = dirData.absoluteFilePath(name);

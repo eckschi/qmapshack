@@ -2176,14 +2176,14 @@ void CMapIMG::drawText(QPainter& p)
 
         // get path length and string length
         qreal length = qAbs(path.length());
-        qreal width = fm.width(textpath.text);
+        qreal width = fm.horizontalAdvance(textpath.text);
 
         // adjust font size until string fits into polyline
         while(width > (length * 0.7))
         {
             font.setPixelSize(font.pixelSize() - 1);
             fm = QFontMetricsF(font);
-            width = fm.width(textpath.text);
+            width = fm.horizontalAdvance(textpath.text);
 
             if((font.pixelSize() < 8))
             {
@@ -2225,7 +2225,7 @@ void CMapIMG::drawText(QPainter& p)
         // get starting angle of first two letters
         const QString& text = textpath.text;
         qreal percent1 = offset / length;
-        qreal percent2 = (offset + fm.width(text.left(2))) / length;
+        qreal percent2 = (offset + fm.horizontalAdvance(text.left(2))) / length;
 
         QPointF point1 = path.pointAtPercent(percent1);
         QPointF point2 = path.pointAtPercent(percent2);
@@ -2247,7 +2247,7 @@ void CMapIMG::drawText(QPainter& p)
         for(int i = 0; i < size; ++i)
         {
             //percent1 = percent2;
-            percent2 = (offset + fm.width(text[i])) / length;
+            percent2 = (offset + fm.horizontalAdvance(text[i])) / length;
 
             point1 = point2;
             point2 = path.pointAtPercent(percent2);
@@ -2281,7 +2281,7 @@ void CMapIMG::drawText(QPainter& p)
 
             p.restore();
 
-            offset += fm.width(text[i]);
+            offset += fm.horizontalAdvance(text[i]);
         }
     }
 }

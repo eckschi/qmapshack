@@ -28,32 +28,32 @@ IGarminStrTbl::IGarminStrTbl(const quint16 codepage, const quint8 mask, QObject*
     , codepage(codepage)
     , mask(mask)
 {
-    if(codepage != 0)
-    {
-        if(1250 <= codepage && codepage <= 1258)
-        {
-            char strcp[64];
-            sprintf(strcp, "Windows-%i", codepage);
-            codec = QTextCodec::codecForName(strcp);
-        }
-        else if(codepage == 950)
-        {
-            codec = QTextCodec::codecForName("Big5");
-        }
-        else if(codepage == 850)
-        {
-            codec = QTextCodec::codecForName("IBM 850");
-        }
-        else if(codepage == 65001)
-        {
-            codec = QTextCodec::codecForName("UTF-8");
-        }
-        else
-        {
-            qDebug() << "unknown codepage:" << codepage << "0x" << Qt::hex << codepage;
-            codec = QTextCodec::codecForName("Latin1");
-        }
-    }
+    // if(codepage != 0)
+    // {
+    //     if(1250 <= codepage && codepage <= 1258)
+    //     {
+    //         char strcp[64];
+    //         sprintf(strcp, "Windows-%i", codepage);
+    //         codec = QTextCodec::codecForName(strcp);
+    //     }
+    //     else if(codepage == 950)
+    //     {
+    //         codec = QTextCodec::codecForName("Big5");
+    //     }
+    //     else if(codepage == 850)
+    //     {
+    //         codec = QTextCodec::codecForName("IBM 850");
+    //     }
+    //     else if(codepage == 65001)
+    //     {
+    //         codec = QTextCodec::codecForName("UTF-8");
+    //     }
+    //     else
+    //     {
+    //         qDebug() << "unknown codepage:" << codepage << "0x" << Qt::hex << codepage;
+    //         codec = QTextCodec::codecForName("Latin1");
+    //     }
+    // }
 
     mask32 = mask;
     mask32 <<= 8;
@@ -153,7 +153,7 @@ QString IGarminStrTbl::processLabel(const char* buffer, unsigned lastSeperator)
     QString label;
     if (codepage != 0)
     {
-        label = codec->toUnicode(buffer);
+        label = QString::fromUtf8(buffer);
     }
     else
     {

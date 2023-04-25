@@ -65,7 +65,7 @@ bool CGisItemRate::getRatingChanged()
 
 QSet<QString> CGisItemRate::getKeywords() const
 {
-    const QList<QString>& keywords = keywordPlainTextEdit->toPlainText().split(QRegExp("\\s*,\\s*"), Qt::SkipEmptyParts);
+    const QList<QString>& keywords = keywordPlainTextEdit->toPlainText().split(QRegularExpression("\\s*,\\s*"), Qt::SkipEmptyParts);
     return {keywords.begin(), keywords.end()};
 }
 

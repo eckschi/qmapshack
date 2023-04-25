@@ -100,7 +100,7 @@ bool CTwoNavProject::save()
             if(trk)
             {
                 QString fn = trk->getName();
-                fn = fn.remove(QRegExp("[^A-Za-z0-9_]"));
+                fn = fn.remove(QRegularExpression("[^A-Za-z0-9_]"));
                 fn = dir.absoluteFilePath(fn + ".trk");
 
                 if(!trk->saveTwoNav(fn))
@@ -123,7 +123,7 @@ bool CTwoNavProject::save()
         }
 
         QString fn = getName();
-        fn = fn.remove(QRegExp("[^A-Za-z0-9_]"));
+        fn = fn.remove(QRegularExpression("[^A-Za-z0-9_]"));
 
         if(!wpts.isEmpty())
         {
@@ -195,7 +195,7 @@ bool CTwoNavProject::saveWpts(QList<CGisItemWpt*>& wpts, const QString& filename
         return false;
     }
     QTextStream out(&file);
-    out.setCodec(QTextCodec::codecForName("UTF-8"));
+    // out.setCodec(QTextCodec::codecForName("UTF-8"));
 
     qreal north = -90.0;
     qreal south = 90.0;

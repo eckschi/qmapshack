@@ -52,7 +52,7 @@ static void loadTranslations()
 #if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(Q_OS_CYGWIN)
     QString resourceDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
     QString translationPath = QCoreApplication::applicationDirPath();
-    translationPath.replace(QRegExp("bin$"), "share/" APP_STR "/translations");
+    translationPath.replace(QRegularExpression("bin$"), "share/" APP_STR "/translations");
     prepareTranslator(resourceDir, "qt_");
     prepareTranslator(translationPath, APP_STR "_");
 #endif

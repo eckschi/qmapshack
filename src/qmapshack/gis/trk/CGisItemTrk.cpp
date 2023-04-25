@@ -666,7 +666,7 @@ QString CGisItemTrk::getInfoRange() const
     }
 
     bool timeIsValid = pt1->time.isValid() && pt2->time.isValid();
-    qreal deltaTime = pt2->time.toTime_t() - pt1->time.toTime_t();
+    qreal deltaTime = pt2->time.toSecsSinceEpoch() - pt1->time.toSecsSinceEpoch();
 
     const qreal distance = pt2->distance - pt1->distance;
 
@@ -674,7 +674,7 @@ QString CGisItemTrk::getInfoRange() const
     str += QString("%3 %1%2 ").arg(val, unit).arg(QChar(0x21A6));
     if(timeIsValid)
     {
-        quint32 t = pt2->time.toTime_t() - pt1->time.toTime_t();
+        quint32 t = pt2->time.toSecsSinceEpoch() - pt1->time.toSecsSinceEpoch();
         quint32 hh = t / 3600;
         quint32 mm = (t % 3600) / 60;
         quint32 ss = t % 60;
@@ -833,7 +833,7 @@ QString CGisItemTrk::getInfoRange(const CTrackData::trkpt_t& trkpt1, const CTrac
 
     if(pt1.time.isValid() && pt2.time.isValid())
     {
-        dt = pt2.time.toTime_t() - pt1.time.toTime_t();
+        dt = pt2.time.toSecsSinceEpoch() - pt1.time.toSecsSinceEpoch();
     }
 
     QString asc = tr("Ascent: -");
@@ -2753,7 +2753,7 @@ bool CGisItemTrk::setMouseFocusByTime(quint32 time, focusmode_e fmode, const QSt
                 continue;
             }
 
-            qreal d = qAbs(qreal(pt.time.toTime_t()) - qreal(time));
+            qreal d = qAbs(qreal(pt.time.toSecsSinceEpoch()) - qreal(time));
             if(d <= delta)
             {
                 newPointOfFocus = &pt;

@@ -22,6 +22,7 @@
 #include <canvas/CCanvas.h>
 #include <QMenu>
 #include <QTimer>
+#include <QActionGroup>
 
 CSearchExplanationDialog* CSearchLineEdit::explanationDlg = nullptr;
 

@@ -110,7 +110,7 @@ function(translate_ts qmFiles)
                 OPTIONS ${TR_UPDATE_OPTIONS}
             )
         else()
-            qt5_patched_add_translation(QM ${tsFiles})
+            # qt6_patched_add_translation(QM ${tsFiles})
         endif()
     else()
         # Qt4

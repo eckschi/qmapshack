@@ -243,7 +243,7 @@ QString CGisItemWpt::getLastName(const QString& name)
         }
         else if(idx < s)
         {
-            lastName = lastName.left(idx) + QString::number(lastName.midRef(idx).toInt() + 1);
+            lastName = lastName.left(idx) + QString::number(lastName.mid(idx).toInt() + 1);
         }
     }
 

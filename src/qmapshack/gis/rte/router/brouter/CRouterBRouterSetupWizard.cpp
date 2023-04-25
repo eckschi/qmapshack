@@ -24,7 +24,7 @@
 #include "helpers/CWebPage.h"
 #include "setup/IAppSetup.h"
 
-#include <JlCompress.h>
+#include <QuaZip-Qt6-1.4/quazip/JlCompress.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QNetworkReply>

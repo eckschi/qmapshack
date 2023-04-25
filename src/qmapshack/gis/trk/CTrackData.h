@@ -179,7 +179,7 @@ public:
 
         inline void sanitizeFlags()
         {
-            if((activity == eAct20None))
+            if(activity == eAct20None)
             {
                 act10_e act = act10_e(flags & eActMask);
                 if(act1to2.contains(act))

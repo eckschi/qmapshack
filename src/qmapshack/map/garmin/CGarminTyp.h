@@ -208,7 +208,7 @@ protected:
     virtual bool parsePolyline(QDataStream& in, QMap<quint32, polyline_property>& polylines);
     virtual bool parsePoint(QDataStream& in, QMap<quint32, point_property>& points);
 
-    QTextCodec* getCodec(quint16 codepage);
+    // QTextCodec* getCodec(quint16 codepage);
     void decodeBitmap(QDataStream& in, QImage& img, int w, int h, int bpp);
     bool decodeBppAndBytes(int ncolors, int w, int flags, int& bpp, int& bytes);
     bool decodeColorTable(QDataStream& in, QImage& img, int ncolors, int maxcolor, bool hasAlpha);

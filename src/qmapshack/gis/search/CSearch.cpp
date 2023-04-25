@@ -17,6 +17,7 @@
 **********************************************************************************************/
 
 #include "CSearch.h"
+#include <QActionGroup>
 
 Qt::CaseSensitivity CSearch::caseSensitivity = Qt::CaseInsensitive;
 CSearch::search_mode_e CSearch::searchMode = CSearch::eSearchModeText;
@@ -196,23 +197,23 @@ CSearch::CSearch(QString searchstring)
             const static QString capIgnAnd = "(?:" + tr("and") + ")?";
             //The second number, the units and the "and" are optional
             //The String has to be matched completely in order to avoid false positives thus the ^ and the $
-            QRegExp numericArguments("^" + capNum + capIgnWS + capUnit + capIgnWS + capIgnAnd + capIgnWS + capNumOpt + capIgnWS + capUnit + "$", Qt::CaseInsensitive);
-            numericArguments.indexIn(filterValueString);
-            if(numericArguments.cap(0).simplified() != "")
+            QRegularExpression numericArguments("^" + capNum + capIgnWS + capUnit + capIgnWS + capIgnAnd + capIgnWS + capNumOpt + capIgnWS + capUnit + "$", QRegularExpression::CaseInsensitiveOption);
+            QRegularExpressionMatch match = numericArguments.match(filterValueString);
+            if(match.capturedView(0).toString().simplified() != "")
             {
-                if(numericArguments.cap(1) != "")     //to avoid removal of NOFLOAT
+                if(match.capturedView(1).toString() != "")     //to avoid removal of NOFLOAT
                 {
-                    filterValue.value1 = numericArguments.cap(1).toFloat();
+                    filterValue.value1 = match.capturedView(1).toFloat();
                 }
 
-                filterValue.str1 = numericArguments.cap(2);
+                filterValue.str1 =  match.capturedView(2).toString();
 
-                if(numericArguments.cap(3) != "")     //to avoid removal of NOFLOAT
+                if(match.capturedView(3).toString() != "")     //to avoid removal of NOFLOAT
                 {
-                    filterValue.value2 = numericArguments.cap(3).toFloat();
+                    filterValue.value2 = match.capturedView(3).toFloat();
                 }
 
-                filterValue.str2 = numericArguments.cap(4);
+                filterValue.str2 = match.capturedView(4).toString();
             }
         }
         if(filterValue.toString().isEmpty())
@@ -661,11 +662,11 @@ QMap<CSearch::search_type_e, CSearch::fSearch> CSearch::initSearchTypeLambdaMap(
     map.insert(eSearchTypeRegEx, [](const searchValue_t& itemValue, searchValue_t& searchValue){
         if(CSearch::caseSensitivity == Qt::CaseInsensitive)//There is no option to make regex caseinsensitive
         {
-            return itemValue.toString().toLower().contains(QRegExp(searchValue.toString().toLower()));
+            return itemValue.toString().toLower().contains(QRegularExpression(searchValue.toString().toLower()));
         }
         else
         {
-            return itemValue.toString().contains(QRegExp(searchValue.toString()));
+            return itemValue.toString().contains(QRegularExpression(searchValue.toString()));
         }
     });
     return map;

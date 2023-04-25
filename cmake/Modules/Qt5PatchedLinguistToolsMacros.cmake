@@ -80,7 +80,7 @@ function(QT5_PATCHED_CREATE_TRANSLATION _qm_files)
             ARGS ${_lupdate_options} "@${_ts_lst_file}" -ts ${_ts_file}
             DEPENDS ${_my_sources} ${_ts_lst_file} VERBATIM)
     endforeach()
-    qt5_patched_add_translation(${_qm_files} ${_my_tsfiles})
+    qt6_patched_add_translation(${_qm_files} ${_my_tsfiles})
     set(${_qm_files} ${${_qm_files}} PARENT_SCOPE)
 endfunction()
 

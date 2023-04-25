@@ -2,6 +2,13 @@
 # CMake compatibility requirements
 ###############################################################################################
 cmake_minimum_required(VERSION 3.0.0)
+set(LOCAL_DEV On)
+set(HOMEBREW_PREFIX /Users/eckschi/Projects/libs)
+set(QT_DEV_PATH /Users/eckschi/Qt/6.5.0)
+# set(CMAKE_PREFIX_PATH "/Users/eckschi/Qt/6.5.0/macos/lib/cmake")
+set(QT_DEV_PATH "/Users/eckschi/Qt/6.5.0/macos")
+set(ROUTINO_DEV_PATH "/Users/eckschi/Projects/libs/usr/local/")
+
 
 # Needed to properly handle extract translations strings when using the Ninja
 # generator.
@@ -50,6 +57,7 @@ include(DefineInstallationPaths)
 include(CPackConfig.cmake)
 include(ConfigureChecks.cmake)
 
+
 ###############################################################################################
 # All boolean options
 ###############################################################################################
@@ -82,7 +90,9 @@ endif(KEEP_OLD_TRANSLATIONS)
 # All OS and compiler specific tweaks
 ###############################################################################################
 if (APPLE)
-    # Var LOCAL_DEV needs to be defined from outside (caller) 
+set(CMAKE_PREFIX_PATH "/Users/eckschi/Qt/6.5.0/macos/lib/cmake")
+
+# Var LOCAL_DEV needs to be defined from outside (caller) 
     message(STATUS "LOCAL_DEV = ${LOCAL_DEV}")
     if(NOT DEFINED LOCAL_DEV)
         message(FATAL_ERROR "LOCAL_DEV not set!!!")
@@ -93,11 +103,11 @@ if (APPLE)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -framework Foundation -framework DiskArbitration")
     SET(LINK_FLAGS "${LINK_FLAGS} -framework Foundation -framework DiskArbitration")
     
-    if(NOT DEFINED ENV{HOMEBREW_PREFIX})
-        message(FATAL_ERROR "HOMEBREW_PREFIX not set!!!")
-    endif()
-    set(HOMEBREW_PREFIX "$ENV{HOMEBREW_PREFIX}" CACHE PATH "Path to Homebrew installation")
-    message("HOMEBREW_PREFIX = ${HOMEBREW_PREFIX}")
+#    if(NOT DEFINED ENV{HOMEBREW_PREFIX})
+#        message(FATAL_ERROR "HOMEBREW_PREFIX not set!!!")
+#    endif()
+#    set(HOMEBREW_PREFIX "$ENV{HOMEBREW_PREFIX}" CACHE PATH "Path to Homebrew installation")
+#    message("HOMEBREW_PREFIX = ${HOMEBREW_PREFIX}")
 
     if(NOT DEFINED QT_DEV_PATH)
         message(WARNING "QT_DEV_PATH not set!!!")
@@ -173,38 +183,40 @@ cxx_add_flag_if_supported(-Woverloaded-virtual)
 ###############################################################################################
 # Find all required packages and setup internal variables
 ###############################################################################################
-find_package(Qt5Widgets             REQUIRED)
-find_package(Qt5Core                REQUIRED)
-find_package(Qt5Xml                 REQUIRED)
-find_package(Qt5Sql                 REQUIRED)
-find_package(Qt5LinguistTools       REQUIRED)
-find_package(Qt5PrintSupport        REQUIRED)
-find_package(Qt5UiTools             REQUIRED)
-find_package(Qt5Network             REQUIRED)
-find_package(Qt5WebEngineWidgets    REQUIRED)
-find_package(Qt5Qml                 REQUIRED)
-find_package(Qt5Help                REQUIRED)
+find_package(Qt6Widgets             REQUIRED)
+find_package(Qt6Core                REQUIRED)
+find_package(Qt6Xml                 REQUIRED)
+find_package(Qt6Sql                 REQUIRED)
+find_package(Qt6LinguistTools       REQUIRED)
+find_package(Qt6PrintSupport        REQUIRED)
+find_package(Qt6UiTools             REQUIRED)
+find_package(Qt6Network             REQUIRED)
+find_package(Qt6WebEngineWidgets    REQUIRED)
+find_package(Qt6Qml                 REQUIRED)
+find_package(Qt6Help                REQUIRED)
 find_package(GDAL                   REQUIRED)
 find_package(PROJ                   REQUIRED)
 find_package(JPEG                   REQUIRED)
 find_package(ROUTINO                REQUIRED)
-find_package(QuaZip-Qt5             REQUIRED)
-find_package(ALGLIB                         ) # optional as we can use our local version
+find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
+#target_link_libraries(mytarget PRIVATE Qt6::Core5Compat)
+set(QuaZip-Qt6_DIR "/Users/eckschi/Projects/libs/usr/local/lib/cmake/QuaZip-Qt6-1.4")
+find_package(QuaZip-Qt6             REQUIRED)
+#find_package(ALGLIB                         ) # optional as we can use our local version
 
-
-if(${Qt5Widgets_VERSION} VERSION_LESS 5.15.2)
-    message( SEND_ERROR "You need at least Qt5.15.2 or newer.")
-endif()
+#if(${Qt5Widgets_VERSION} VERSION_LESS 5.15.2)
+#    message( SEND_ERROR "You need at least Qt5.15.2 or newer.")
+#endif()
 
 if(${PROJ_VERSION} VERSION_LESS 8.0.0)
     message( SEND_ERROR "You need at least PROJ 8.0.0 or newer.")
 endif()
 
 if(USE_QT5DBus)
-    find_package(Qt5DBus REQUIRED)
-    if(Qt5DBus_FOUND)
+    find_package(Qt6DBus REQUIRED)
+    if(Qt6DBus_FOUND)
         add_definitions(-DHAVE_DBUS)
-    endif(Qt5DBus_FOUND)
+    endif(Qt6DBus_FOUND)
 endif(USE_QT5DBus)
 
 # Everything included. Let's finetune the mess a bit more

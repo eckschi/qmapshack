@@ -266,7 +266,7 @@ void IPlot::leaveEvent(QEvent* /*e*/)
 }
 
 
-void IPlot::enterEvent(QEvent* /*e*/)
+void IPlot::enterEvent(QEnterEvent* /*e*/)
 {
     needsRedraw = true;
     QCursor cursor = QCursor(QPixmap(":/cursors/cursorArrow.png"), 0, 0);
@@ -1397,8 +1397,8 @@ void IPlot::drawActivities(QPainter& p)
 
         if(data->axisType == CPlotData::eAxisTime)
         {
-            x1 = data->x().val2pt(trkptBeg->time.toTime_t());
-            x2 = data->x().val2pt(trkptEnd->time.toTime_t());
+            x1 = data->x().val2pt(trkptBeg->time.toSecsSinceEpoch());
+            x2 = data->x().val2pt(trkptEnd->time.toSecsSinceEpoch());
         }
         else
         {

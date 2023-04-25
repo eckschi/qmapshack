@@ -21,6 +21,7 @@
 
 #include "ui_IDetailsGeoCache.h"
 #include <QDialog>
+#include <QNetworkReply>
 
 class CGisItemWpt;
 class QNetworkAccessManager;

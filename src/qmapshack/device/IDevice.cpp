@@ -26,7 +26,15 @@
 #include "helpers/CSelectCopyAction.h"
 
 #ifdef HAVE_DBUS
-#include <QtDBus>
+//#include <QtDBus>
+#include <QtDBus/QtDBusDepends>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusConnectionInterface>
+#include <QtDBus/QDBusVariant>
+#include <QtDBus/QDBusArgument>
+#include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusReply>
 #endif
 
 int IDevice::cnt = 0;

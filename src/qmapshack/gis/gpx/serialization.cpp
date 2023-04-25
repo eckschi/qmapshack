@@ -1189,7 +1189,6 @@ void CDeviceGarmin::createAdventureFromProject(IGisProject* project, const QStri
 
     file.open(QIODevice::WriteOnly);
     QTextStream out(&file);
-    out.setCodec("UTF-8");
     out << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>" << Qt::endl;
     out << doc.toString();
     file.close();

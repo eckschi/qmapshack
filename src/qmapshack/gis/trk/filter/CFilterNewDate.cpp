@@ -51,8 +51,8 @@ CFilterNewDate::CFilterNewDate(CGisItemTrk& trk, QWidget* parent)
     case IUnit::eTZAuto:
     {
         CTrackData::trkpt_t trkpt = *trk.getTrackData().begin();
-        zone = IUnit::pos2timezone(trkpt * DEG_TO_RAD);
-        // break; // intended
+        zone = IUnit::pos2timezone(QPointF(trkpt) * DEG_TO_RAD);
+        // break; // intended 
     }
 
     case IUnit::eTZSelected:

@@ -171,13 +171,14 @@ CTextEditWidget::~CTextEditWidget()
 QString CTextEditWidget::getHtml()
 {
     QString str = textEdit->toHtml();
-    QRegExp re(".*(\\<body.*body\\>).*");
-    if(re.exactMatch(str))
+    QRegularExpression re(QRegularExpression::anchoredPattern(".*(\\<body.*body\\>).*"));
+    QRegularExpressionMatch match = re.match(str);
+    if(match.hasMatch())
     {
-        str = re.cap(1);
+        str = match.capturedView(1).toString();
 
-        QRegExp re1("<body.*>");
-        re1.setMinimal(true);
+        QRegularExpression re1("<body.*>");
+        //re1.setMinimal(true); todo
         str = str.replace("body>", "div>").replace(re1, "<div>");
     }
 

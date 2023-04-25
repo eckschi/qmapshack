@@ -112,11 +112,12 @@ static QStringList writeCompeTime( const QDateTime& t, bool isTrack)
 static QDateTime readCompeTime(QString str, bool isTrack)
 {
     QDateTime timestamp;
-    QRegExp re("([0-9]{2})-([A-Za-z]{3})-.*");
+    QRegularExpression re(QRegularExpression::anchoredPattern("([0-9]{2})-([A-Za-z]{3})-.*"));
 
-    if(re.exactMatch(str))
+    QRegularExpressionMatch match = re.match(str);
+    if(match.hasMatch())
     {
-        QString monthStr = re.cap(2);
+        QString monthStr = match.capturedView(2).toString();
 
         QHash<QString, QString> monthStr2Num {
             {"JAN", "01"}
@@ -216,7 +217,7 @@ bool CGisItemTrk::saveTwoNav(const QString& filename)
     IGisProject* project = getParentProject();
 
     QTextStream out(&file);
-    out.setCodec(QTextCodec::codecForName("UTF-8"));
+    // out.setCodec(QTextCodec::codecForName("UTF-8"));
     out << Qt::bom;
     out << "B  UTF-8" << Qt::endl;
     out << "G  WGS 84" << Qt::endl;
@@ -348,7 +349,7 @@ bool CGisItemTrk::readTwoNav(const QString& filename)
         return false;
     }
     QTextStream in(&file);
-    in.setCodec(QTextCodec::codecForName("UTF-8"));
+    // in.setCodec(QTextCodec::codecForName("UTF-8"));
 
     CTrackData::trkseg_t seg;
 
@@ -360,11 +361,11 @@ bool CGisItemTrk::readTwoNav(const QString& filename)
         case 'B':
         {
             QString name = line.mid(1).simplified();
-            QTextCodec* codec = QTextCodec::codecForName(name.toLatin1());
-            if(codec)
-            {
-                in.setCodec(codec);
-            }
+            // QTextCodec* codec = QTextCodec::codecForName(name.toLatin1());
+            // if(codec)
+            // {
+            //     in.setCodec(codec);
+            // }
             break;
         }
 
@@ -598,7 +599,7 @@ bool CTwoNavProject::loadWpts(const QString& filename, const QDir& dir)
         return false;
     }
     QTextStream in(&file);
-    in.setCodec(QTextCodec::codecForName("UTF-8"));
+    // in.setCodec(QTextCodec::codecForName("UTF-8"));
 
     while(!line.isEmpty())
     {
@@ -609,11 +610,11 @@ bool CTwoNavProject::loadWpts(const QString& filename, const QDir& dir)
         case 'B':
         {
             QString name = line.mid(1).simplified();
-            QTextCodec* codec = QTextCodec::codecForName(name.toLatin1());
-            if(codec)
-            {
-                in.setCodec(codec);
-            }
+            // QTextCodec* codec = QTextCodec::codecForName(name.toLatin1());
+            // if(codec)
+            // {
+            //     in.setCodec(codec);
+            // }
             break;
         }
 

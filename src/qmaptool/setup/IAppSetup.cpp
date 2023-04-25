@@ -106,7 +106,7 @@ QString IAppSetup::path(QString path, QString subdir, bool mkdir, QString debugN
 {
     QDir pathDir(path);
 
-    if(subdir != 0)
+    if(subdir != "")
     {
         pathDir = QDir(pathDir.absoluteFilePath(subdir));
     }
@@ -115,7 +115,7 @@ QString IAppSetup::path(QString path, QString subdir, bool mkdir, QString debugN
         pathDir.mkpath(pathDir.absolutePath());
         qDebug() << debugName << "path created" << pathDir.absolutePath();
     }
-    else if (debugName != 0)
+    else if (debugName != "")
     {
         qDebug() << debugName << "path" << pathDir.absolutePath();
     }

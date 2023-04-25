@@ -202,8 +202,8 @@ void CRtOpenSky::fastDraw(QPainter& p, const QRectF& viewport, CRtDraw* rt)
         text += "<tr><td>" + tr("key:") + "</td><td>" + aircraft.key + "</td></tr>";
         text += "<tr><td>" + tr("callsign:") + "</td><td>" + aircraft.callsign + "</td></tr>";
         text += "<tr><td>" + tr("origin country:") + "</td><td>" + aircraft.originCountry + "</td></tr>";
-        text += "<tr><td>" + tr("time position:") + "</td><td>" + QDateTime::fromTime_t(aircraft.timePosition).toString() + "</td></tr>";
-        text += "<tr><td>" + tr("last contact:") + "</td><td>" + QDateTime::fromTime_t(aircraft.lastContact).toString() + "</td></tr>";
+        text += "<tr><td>" + tr("time position:") + "</td><td>" + QDateTime::fromMSecsSinceEpoch(aircraft.timePosition).toString() + "</td></tr>";
+        text += "<tr><td>" + tr("last contact:") + "</td><td>" + QDateTime::fromMSecsSinceEpoch(aircraft.lastContact).toString() + "</td></tr>";
         text += "<tr><td>" + tr("longitude:") + "</td><td>" + QString::number(aircraft.longitude) + "°</td></tr>";
         text += "<tr><td>" + tr("latitude:") + "</td><td>" + QString::number(aircraft.latitude) + "°</td></tr>";
         text += "<tr><td>" + tr("geo. alt.:") + "</td><td>" + QString::number(aircraft.geoAltitude) + "m</td></tr>";
@@ -310,7 +310,7 @@ void CRtOpenSky::slotRequestFinished(QNetworkReply* reply)
         QMutexLocker lock(&IRtSource::mutex);
         aircrafts.clear();
 
-        timestamp = QDateTime::fromTime_t(json.object().value("time").toInt());
+        timestamp = QDateTime::fromSecsSinceEpoch(json.object().value("time").toInt());
         const QJsonArray& jsonStates = json.object().value("states").toArray();
         for(const QJsonValue& jsonState : jsonStates)
         {

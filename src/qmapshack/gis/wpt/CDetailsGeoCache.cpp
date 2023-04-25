@@ -279,25 +279,27 @@ void CDetailsGeoCache::slotRequestFinished(QNetworkReply* reply)
         return;
     }
 
-    QRegExp re1(".*CachePageImages.*");
-    QRegExp re2("(https://.*\\.jpg).*>(.*)</a>");
-    re2.setMinimal(true);
+    QRegularExpression re1(QRegularExpression::anchoredPattern(".*CachePageImages.*"));
+    QRegularExpression re2("(https://.*\\.jpg).*>(.*)</a>");
+    //re2.setMinimal(true);
 
     bool watchOut = false;
     QStringList lines = asw.split("\n");
     for(const QString& line : qAsConst(lines))
     {
-        if(!watchOut && re1.exactMatch(line))
+        if(!watchOut && re1.match(line).hasMatch())
         {
             watchOut = true;
         }
         else if(watchOut)
         {
             int pos = 0;
-            while ((pos = re2.indexIn(line, pos)) != NOIDX)
+
+            QRegularExpressionMatch match = re2.match(line, pos);
+            while (match.hasMatch())
             {
-                QString url = re2.cap(1);
-                QString info = re2.cap(2);
+                QString url = match.capturedView(1).toString();
+                QString info = match.capturedView(2).toString();
 
                 QNetworkRequest request;
                 request.setUrl(url);
@@ -306,7 +308,8 @@ void CDetailsGeoCache::slotRequestFinished(QNetworkReply* reply)
                 reply->setProperty("info", info);
                 cntSpoiler++;
 
-                pos += re2.matchedLength();
+                pos += match.capturedLength();
+                QRegularExpressionMatch match = re2.match(line, pos);
             }
 
             watchOut = false;

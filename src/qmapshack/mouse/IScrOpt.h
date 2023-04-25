@@ -58,7 +58,7 @@ protected slots:
     void slotLinkActivated(const QString& link);
 
 protected:
-    void enterEvent(QEvent* e) override;
+    void enterEvent(QEnterEvent* e) override;
     void leaveEvent(QEvent* e) override;
     // block mouse actions to hit the canvas
     void mousePressEvent(QMouseEvent* e) override

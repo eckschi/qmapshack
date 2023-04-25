@@ -23,22 +23,22 @@ CHelpBrowser::CHelpBrowser(QHelpEngine* helpEngine, QWidget* parent)
     : QTextBrowser(parent)
     , engine(helpEngine)
 {
-    connect(engine->contentWidget(), &QHelpContentWidget::linkActivated, this, &CHelpBrowser::setSource);
-    connect(engine->indexWidget(), &QHelpIndexWidget::documentActivated, this, [this](const QHelpLink& document, const QString& keyword){
-        setSource(document.url);
-    });
-    connect(engine->searchEngine()->resultWidget(), &QHelpSearchResultWidget::requestShowLink, this, &CHelpBrowser::setSource);
+    // connect(engine->contentWidget(), &QHelpContentWidget::linkActivated, this, &CHelpBrowser::setSource);
+    // connect(engine->indexWidget(), &QHelpIndexWidget::documentActivated, this, [this](const QHelpLink& document, const QString& keyword){
+    //     setSource(document.url);
+    // });
+    // connect(engine->searchEngine()->resultWidget(), &QHelpSearchResultWidget::requestShowLink, this, &CHelpBrowser::setSource);
 }
 
-void CHelpBrowser::setSource(const QUrl& url)
-{
-    if(url.scheme().startsWith("http"))
-    {
-        QDesktopServices::openUrl(url);
-        return;
-    }
-    QTextBrowser::setSource(url);
-}
+// void CHelpBrowser::setSource(const QUrl& url)
+// {
+//     if(url.scheme().startsWith("http"))
+//     {
+//         QDesktopServices::openUrl(url);
+//         return;
+//     }
+//     QTextBrowser::setSource(url);
+// }
 
 QVariant CHelpBrowser::loadResource(int type, const QUrl& name)
 {

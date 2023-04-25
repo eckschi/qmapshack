@@ -75,7 +75,7 @@ void CPropertyTrk::setupData()
         {
             property.min = 0;
             property.axisType = property_t::eAxisTime;
-            property.getX = [](const CTrackData::trkpt_t& p) {return p.time.isValid() ? p.time.toTime_t() : NOFLOAT; };
+            property.getX = [](const CTrackData::trkpt_t& p) {return p.time.isValid() ? p.time.toSecsSinceEpoch() : NOFLOAT; };
         }
 
         if(key == CKnownExtension::internalSpeedDist)

@@ -71,28 +71,28 @@ bool CGarminTyp::decode(const QByteArray& array, QMap<quint32, polygon_property>
     return true;
 }
 
-QTextCodec* CGarminTyp::getCodec(quint16 codepage)
-{
-    QTextCodec* codec = QTextCodec::codecForName(QString("CP%1").arg(codepage).toLatin1());
-    if(codepage == 65001)
-    {
-        codec = QTextCodec::codecForName("UTF-8");
-    }
+// QTextCodec* CGarminTyp::getCodec(quint16 codepage)
+// {
+//     QTextCodec* codec = QTextCodec::codecForName(QString("CP%1").arg(codepage).toLatin1());
+//     if(codepage == 65001)
+//     {
+//         codec = QTextCodec::codecForName("UTF-8");
+//     }
 
-    return codec;
-}
+//     return codec;
+// }
 
 
 bool CGarminTyp::parseHeader(QDataStream& in)
 {
     int i;
     QString garmintyp;
-    quint8 byte;
+    uint8_t byte;
 
     for(i = 0; i < 10; ++i)
     {
         in >> byte;
-        garmintyp.append(byte);
+        garmintyp.append((QChar)byte);
     }
     garmintyp.append(0);
     if(garmintyp != "GARMIN TYP")
@@ -232,7 +232,7 @@ bool CGarminTyp::parsePolygon(QDataStream& in, QMap<quint32, polygon_property>& 
         return true;
     }
 
-    QTextCodec* codec = getCodec(codepage);
+    //QTextCodec* codec = getCodec(codepage);
 
     const int N = sectPolygons.arraySize / sectPolygons.arrayModulo;
     for (int element = 0; element < N; element++)
@@ -504,10 +504,10 @@ bool CGarminTyp::parsePolygon(QDataStream& in, QMap<quint32, polygon_property>& 
 
                     str += t8;
                 }
-                if(codec != nullptr)
-                {
-                    property.strings[langcode] = codec->toUnicode(str);
-                }
+                // if(codec != nullptr)
+                // {
+                //     property.strings[langcode] = codec->toUnicode(str);
+                // }
 #ifdef DBG
                 qDebug() << len << langcode << property.strings[langcode];
 #endif
@@ -554,7 +554,7 @@ bool CGarminTyp::parsePolyline(QDataStream& in, QMap<quint32, polyline_property>
         return true;
     }
 
-    QTextCodec* codec = getCodec(codepage);
+    // QTextCodec* codec = getCodec(codepage);
 
     const int N = sectPolylines.arraySize / sectPolylines.arrayModulo;
     for (int element = 0; element < N; element++)
@@ -897,10 +897,10 @@ bool CGarminTyp::parsePolyline(QDataStream& in, QMap<quint32, polyline_property>
 
                     str += t8_1;
                 }
-                if(codec != nullptr)
-                {
-                    property.strings[langcode] = codec->toUnicode(str);
-                }
+                // if(codec != nullptr)
+                // {
+                //     property.strings[langcode] = codec->toUnicode(str);
+                // }
 #ifdef DBG
                 qDebug() << len << langcode << property.strings[langcode];
 #endif
@@ -1145,7 +1145,7 @@ bool CGarminTyp::parsePoint(QDataStream& in, QMap<quint32, point_property>& poin
         return true;
     }
 
-    QTextCodec* codec = getCodec(codepage);
+    // QTextCodec* codec = getCodec(codepage);
 
     const int N = sectPoints.arraySize / sectPoints.arrayModulo;
     for (int element = 0; element < N; element++)
@@ -1304,10 +1304,10 @@ bool CGarminTyp::parsePoint(QDataStream& in, QMap<quint32, point_property>& poin
 
                     str += t8_1;
                 }
-                if(codec != nullptr)
-                {
-                    property.strings[langcode] = codec->toUnicode(str);
-                }
+                // if(codec != nullptr)
+                // {
+                //     property.strings[langcode] = codec->toUnicode(str);
+                // }
 #ifdef DBG
                 qDebug() << len << langcode << property.strings[langcode];
 #endif

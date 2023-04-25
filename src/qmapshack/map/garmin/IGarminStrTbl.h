@@ -23,7 +23,7 @@
 
 class CFileExt;
 class QByteArray;
-class QStringList;
+// class QStringList;
 
 class IGarminStrTbl : public QObject
 {
@@ -70,7 +70,6 @@ protected:
 
     // conversion of strings
     quint16 codepage;
-    QTextCodec* codec = nullptr;
     const quint8 mask;
     quint32 mask32;
     quint64 mask64;

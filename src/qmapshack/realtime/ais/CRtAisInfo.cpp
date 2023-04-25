@@ -236,7 +236,7 @@ bool CRtAisInfo::verifyLine(const QString& line)
         cs ^= data[i];
     }
 
-    return line.rightRef(2).toInt(0, 16) == cs;
+    return line.right(2).toInt(0, 16) == cs;
 }
 
 void CRtAisInfo::nmeaVDM(const QStringList& tokens)
@@ -569,15 +569,15 @@ void CRtAisInfo::getString(const QByteArray& data, QString& string, int start, i
         int c = get6bitInt(data, i, 6) & 0x3F;
         if (c < 32)
         {
-            string.insert(ci++, c+64);
+            string.insert(ci++, (QChar)(c+64));
         }
         else
         {
-            string.insert(ci++, c);
+            string.insert(ci++, (QChar)c);
         }
     }
-    string.replace(QRegExp("^[@\\s]+"), "");
-    string.replace(QRegExp("[@\\s]+$"), "");
+    string.replace(QRegularExpression("^[@\\s]+"), "");
+    string.replace(QRegularExpression("[@\\s]+$"), "");
 }
 
 void CRtAisInfo::startRecord(const QString& filename)
